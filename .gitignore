@@ -1,0 +1,11 @@
+# Binaries for programs and plugins
+main
+iui
+iui/
+verminal
+*.exe
+*.exe~
+*.so
+*.dylib
+*.dll
+vls.log

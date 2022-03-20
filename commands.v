@@ -58,22 +58,22 @@ fn cmd_exec(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
 
 // Linux
 fn cmd_exec_unix(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
-    mut cmd := os.Command{
-        path: args.join(' ')
-    }
+	mut cmd := os.Command{
+		path: args.join(' ')
+	}
 
-    cmd.start() or {
-        tbox.lines << err.str()
-    }
-    for !cmd.eof {
-        line := cmd.read_line()
-        if line.len > 0 {
-            tbox.lines << line
-        }
-    }
-    add_new_input_line(mut tbox)
+	cmd.start() or { tbox.lines << err.str() }
+	for !cmd.eof {
+		out := cmd.read_line()
+		if out.len > 0 {
+			for line in out.split_into_lines() {
+				tbox.lines << line.trim_space()
+			}
+		}
+	}
+	add_new_input_line(mut tbox)
 
-    cmd.close() or { tbox.lines << err.str() }
+	cmd.close() or { tbox.lines << err.str() }
 }
 
 // Windows;
@@ -87,16 +87,16 @@ fn cmd_exec_win(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
 
 	pro.set_redirect_stdio()
 	pro.run()
- 
+
 	for pro.is_alive() {
 		mut out := pro.stdout_read()
 		if out.len > 0 {
-			//tbox.text = tbox.text + '\n' + out.trim_space()
-            tbox.lines << out.trim_space()
-        }
+			for line in out.split_into_lines() {
+				tbox.lines << line.trim_space()
+			}
+		}
 	}
 	add_new_input_line(mut tbox)
-    
-    
-    pro.close()
+
+	pro.close()
 }

@@ -27,6 +27,21 @@ fn cmd_cd(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 	}
 }
 
+fn tree_cmd(dir string, mut tbox ui.TextArea, tabs int) {
+    path := os.real_path(dir)
+    files := os.ls(path) or {[]}
+    for file in files {
+        joined := os.join_path(path, file)
+        if os.is_dir(joined) {
+            tbox.lines << '│\t'.repeat(tabs) + '├───' + file
+            tree_cmd(joined, mut tbox, tabs + 1)
+        }
+    }
+    if tabs == 0 {
+        add_new_input_line(mut tbox)
+    }
+}
+
 fn cmd_dir(mut tbox ui.TextArea, path string, args []string) {
 	mut ls := os.ls(os.real_path(path)) or { [''] }
 	mut txt := ' Directory of ' + path + '\n\n'
@@ -89,9 +104,15 @@ fn cmd_exec_win(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 	pro.run()
 
 	for pro.is_alive() {
-		mut out := pro.stdout_read()
+		out := pro.stdout_read()
 		if out.len > 0 {
 			for line in out.split_into_lines() {
+				tbox.lines << line.trim_space()
+			}
+		}
+        err := pro.stderr_read()
+        if err.len > 0 {
+			for line in err.split('\n') {
 				tbox.lines << line.trim_space()
 			}
 		}

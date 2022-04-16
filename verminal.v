@@ -86,8 +86,7 @@ fn on_cmd(mut win ui.Window, box ui.TextArea, cmd string) {
 		add_new_input_line(mut tbox)
 	} else if args[0] == 'version' || args[0] == 'ver' {
 		tbox.lines << 'Verminal - A terminal emulator written in V'
-        tbox.lines << '\tVersion: 0.3'
-        tbox.lines << '\tUI Version: ' + ui.version
+        tbox.lines << '\tVersion: 0.4, UI Version: ' + ui.version
         add_new_input_line(mut tbox)
 	} else if args[0] == 'cls' || args[0] == 'clear' {
 		tbox.lines.clear()
@@ -106,6 +105,9 @@ fn on_cmd(mut win ui.Window, box ui.TextArea, cmd string) {
 		win.extra_map['path'] = os.real_path(args[0])
 		add_new_input_line(mut tbox)
 		tbox.caret_top += 1
+    } else if args[0] == 'tree' {
+        path := os.real_path(win.extra_map['path'])
+        go tree_cmd(path, mut tbox, 0)
 	} else {
 		cmd_exec(mut win, mut tbox, args)
 	}

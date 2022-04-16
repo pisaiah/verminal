@@ -4,7 +4,7 @@ module main
 import iui as ui
 import os
 
-fn cmd_cd(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
+fn cmd_cd(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 	mut path := win.extra_map['path']
 	if args.len == 1 {
 		tbox.text = tbox.text + path
@@ -27,7 +27,7 @@ fn cmd_cd(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
 	}
 }
 
-fn cmd_dir(mut tbox ui.TextEdit, path string, args []string) {
+fn cmd_dir(mut tbox ui.TextArea, path string, args []string) {
 	mut ls := os.ls(os.real_path(path)) or { [''] }
 	mut txt := ' Directory of ' + path + '\n\n'
 	for file in ls {
@@ -37,12 +37,12 @@ fn cmd_dir(mut tbox ui.TextEdit, path string, args []string) {
 	tbox.text = tbox.text + txt
 }
 
-fn cmd_v(mut tbox ui.TextEdit, args []string) {
+fn cmd_v(mut tbox ui.TextArea, args []string) {
 	mut pro := os.execute('cmd /min /c ' + args.join(' '))
 	tbox.text = tbox.text + pro.output.trim_space()
 }
 
-fn cmd_exec(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
+fn cmd_exec(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 
     // Make sure we are in the correct directory
 	os.chdir(win.extra_map['path']) or {
@@ -57,7 +57,7 @@ fn cmd_exec(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
 }
 
 // Linux
-fn cmd_exec_unix(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
+fn cmd_exec_unix(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 	mut cmd := os.Command{
 		path: args.join(' ')
 	}
@@ -79,7 +79,7 @@ fn cmd_exec_unix(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
 // Windows;
 // os.Command not fully implemented on Windows, so cmd.exe is used
 //
-fn cmd_exec_win(mut win ui.Window, mut tbox ui.TextEdit, args []string) {
+fn cmd_exec_win(mut win ui.Window, mut tbox ui.TextArea, args []string) {
 	mut pro := os.new_process('cmd')
 
 	mut argsa := ['/min', '/c', args.join(' ')]

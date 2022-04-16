@@ -2,7 +2,6 @@
 module main
 
 import iui as ui
-import os
 
 fn main() {
     mut win := ui.window(theme_dark(), 'Verminal', 800, 400)

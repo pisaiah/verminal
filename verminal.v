@@ -12,7 +12,7 @@ fn create_box(win_ptr voidptr) &ui.TextArea {
     win.extra_map['path'] = path
 
     
-    mut box := ui.textarea(win, ['Verminal 0.4', 'Copyright © 2021-2022 Isaiah.', '', path + '>'])
+    mut box := ui.textarea(win, ['Verminal 0.4.1', 'Copyright © 2021-2022 Isaiah.', '', path + '>'])
     box.set_id(mut win, 'vermbox')
     box.padding_y = 10
     box.code_syntax_on = false
@@ -108,6 +108,10 @@ fn on_cmd(mut win ui.Window, box ui.TextArea, cmd string) {
     } else if args[0] == 'tree' {
         path := os.real_path(win.extra_map['path'])
         go tree_cmd(path, mut tbox, 0)
+    } else if args[0] == 'szip' {
+        szip_cmd(args, mut tbox)
+        tbox.lines << ' '
+        add_new_input_line(mut tbox)
 	} else {
 		cmd_exec(mut win, mut tbox, args)
 	}
